@@ -1,8 +1,9 @@
 #!/bin/bash
 
-readonly IMAGE_NAME="nginx:latest"
-readonly CONTAINER_NAME="nginx"
+readonly PORT=80
 readonly NETWORK_NAME="simple-auth-app"
+readonly CONTAINER_NAME="nginx"
+readonly IMAGE_NAME="nginx:latest"
 
 check_and_create_network() {
     network_exists=$(docker network ls | grep "$NETWORK_NAME")
@@ -32,4 +33,5 @@ check_and_create_network
 rm -r dist
 parcel build index.html
 check_and_remove_container "$CONTAINER_NAME"
-docker run --name "$CONTAINER_NAME" -v /$(pwd)/dist:/data/www:ro -v /$(pwd)/default.conf:/etc/nginx/conf.d/default.conf:ro -d -p 80:80 --network="$NETWORK_NAME" "$IMAGE_NAME"
+docker run --name "$CONTAINER_NAME" -v /$(pwd)/dist:/data/www:ro -v /$(pwd)/default.conf:/etc/nginx/conf.d/default.conf:ro -d -p "$PORT":"$PORT" --network="$NETWORK_NAME" "$IMAGE_NAME"
+#docker run --name "$CONTAINER_NAME" -v /$(pwd)/dist:/data/www:ro -v /$(pwd)/default.conf:/etc/nginx/conf.d/default.conf:ro -v /$(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro -d -p "$PORT":"$PORT" --network="$NETWORK_NAME" "$IMAGE_NAME"
